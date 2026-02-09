@@ -35,6 +35,13 @@ bool meshtastic_send_text(uint8_t channel_index, uint32_t destination_id, const 
         return false;
     }
     
+    // Check message length to prevent buffer overflow
+    size_t msg_len = strlen(message);
+    if (msg_len > UART_BUFFER_SIZE - 50) {  // Leave room for protocol overhead
+        printf("Message too long: %zu bytes\n", msg_len);
+        return false;
+    }
+    
     // Meshtastic protocol uses a simple text-based protocol over UART
     // Format: AT+SEND=<channel>,<destination>,<message>
     // For simplicity, we use a basic protocol. In production, you'd use Protocol Buffers

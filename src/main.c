@@ -117,8 +117,8 @@ int main() {
     
     // Print configuration
     printf("\nConfiguration:\n");
-    printf("  Transmit interval: %d ms (%d minutes)\n", 
-           TRANSMIT_INTERVAL_MS, TRANSMIT_INTERVAL_MS / 60000);
+    printf("  Transmit interval: %d ms (%.1f minutes)\n", 
+           TRANSMIT_INTERVAL_MS, TRANSMIT_INTERVAL_MS / 60000.0f);
     printf("  Status poll interval: %d ms\n", STATUS_POLL_INTERVAL_MS);
     printf("  Channel index: %d\n", MESHTASTIC_CHANNEL_INDEX);
     printf("  Node ID: 0x%08lX (broadcast)\n\n", MESHTASTIC_NODE_ID);

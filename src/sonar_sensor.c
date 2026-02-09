@@ -30,26 +30,26 @@ float sonar_read_distance_cm(void) {
     sleep_us(10);
     gpio_put(g_trigger_pin, 0);
     
-    // Wait for echo to go high
-    uint32_t timeout = time_us_32() + SONAR_TIMEOUT_US;
+    // Wait for echo to go high with absolute time to handle wrap-around
+    absolute_time_t timeout = make_timeout_time_us(SONAR_TIMEOUT_US);
     while (gpio_get(g_echo_pin) == 0) {
-        if (time_us_32() > timeout) {
+        if (time_reached(timeout)) {
             return -1.0f;
         }
     }
     
     // Measure pulse width
-    uint32_t start_time = time_us_32();
-    timeout = start_time + SONAR_TIMEOUT_US;
+    absolute_time_t start_time = get_absolute_time();
+    timeout = make_timeout_time_us(SONAR_TIMEOUT_US);
     
     while (gpio_get(g_echo_pin) == 1) {
-        if (time_us_32() > timeout) {
+        if (time_reached(timeout)) {
             return -1.0f;
         }
     }
     
-    uint32_t end_time = time_us_32();
-    uint32_t pulse_width = end_time - start_time;
+    absolute_time_t end_time = get_absolute_time();
+    int64_t pulse_width = absolute_time_diff_us(start_time, end_time);
     
     // Calculate distance in cm
     // Speed of sound is 343 m/s or 0.0343 cm/us

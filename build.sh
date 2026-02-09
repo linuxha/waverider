@@ -40,7 +40,15 @@ cmake ..
 # Build the project
 echo ""
 echo "Building project..."
-make -j$(nproc)
+# Detect number of cores in a portable way
+if command -v nproc &> /dev/null; then
+    CORES=$(nproc)
+elif command -v sysctl &> /dev/null; then
+    CORES=$(sysctl -n hw.ncpu 2>/dev/null || echo "4")
+else
+    CORES=4
+fi
+make -j${CORES}
 
 # Check if build was successful
 if [ -f waverider.uf2 ]; then
